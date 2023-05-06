@@ -36,11 +36,17 @@ public class Login {
         System.out.println("Para acessar o sistema, será necessário informar seu email e senha.");
 
         while (!login) {
-
+            String senha;
+            String email;
             System.out.println("Digite seu email: ");
-            String email = in.nextLine();
+            
+            email = in.nextLine();
+            
+            
             System.out.println("Digite sua senha: ");
-            String senha = in.nextLine();
+            
+            senha = in.nextLine();
+           
 
             if (!funcionarioService.login(email, senha).isEmpty()) {
                 login = true;
