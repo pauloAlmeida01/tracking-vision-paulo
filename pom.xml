@@ -11,7 +11,35 @@
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>com.mycompany.tracking.vision.paulo.TrackingVisionPaulo</exec.mainClass>
     </properties>
-     <dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>tracking.vision.cli.Login</mainClass> 
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
         <dependency>
             <groupId>com.github.britooo</groupId>
             <artifactId>looca-api</artifactId>
