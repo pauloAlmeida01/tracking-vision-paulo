@@ -36,17 +36,11 @@ public class Login {
         System.out.println("Para acessar o sistema, será necessário informar seu email e senha.");
 
         while (!login) {
-            String senha;
-            String email;
+
             System.out.println("Digite seu email: ");
-            
-            email = in.nextLine();
-            
-            
+            String email = in.nextLine();
             System.out.println("Digite sua senha: ");
-            
-            senha = in.nextLine();
-           
+            String senha = in.nextLine();
 
             if (!funcionarioService.login(email, senha).isEmpty()) {
                 login = true;
@@ -78,7 +72,7 @@ public class Login {
                     Maquina maquina = new Maquina(null, 1, rede.getParametros().getHostName(), looca.getProcessador().getNome(), freqCpu, "Memoria", capRam, looca.getGrupoDeDiscos().getDiscos().get(0).getModelo(), capDisco, leituraDisco, escritaDisco, funcionarioService.retornarFkEmpresa(email, senha), 1);
 
                     maquinaService.salvarMaquina(maquina);
-
+                    System.out.println("Cadastrando rede...");
                     hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
                     Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostname.get(0).getIdMaquina());
                     redeService.cadastrarRede(redesCadastrar);
@@ -117,7 +111,7 @@ public class Login {
                         List<RedeInterface> redes = new ArrayList<>();
 
                         adicionarRede(redes, rede);
-
+                        if(!janelas.isEmpty()) {
                         for (int j = 0; j < janelas.size(); j++) {
                             String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
                             LogService logService = new LogService();
@@ -136,7 +130,14 @@ public class Login {
                             }
 
                         }
+                        }else {
+                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+                            LogService logService = new LogService();
+                            Log log = new Log(null, timeStamp, null, null, looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostname.get(0).getIdMaquina());
 
+                            logService.salvarLog(log);
+                            System.out.println(log);
+                        }
                         System.out.println("Se desejar parar o monitoramento digite(Sim = 0/Não = 1):");
                         Scanner scanner = new Scanner(System.in);
                         Integer parar = scanner.nextInt();
