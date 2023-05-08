@@ -23,7 +23,7 @@ import java.util.Timer;
 public class Login {
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+        
         FuncionarioService funcionarioService = new FuncionarioService();
         MaquinaService maquinaService = new MaquinaService();
         Looca looca = new Looca();
@@ -35,7 +35,7 @@ public class Login {
         System.out.println("Para acessar o sistema, será necessário informar seu email e senha.");
 
         while (!login) {
-
+            Scanner in = new Scanner(System.in);
             System.out.println("Digite seu email: ");
             String email = in.nextLine();
             System.out.println("Digite sua senha: ");
