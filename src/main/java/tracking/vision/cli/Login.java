@@ -11,7 +11,6 @@ import com.github.britooo.looca.api.group.rede.Rede;
 import com.github.britooo.looca.api.group.rede.RedeInterface;
 import tracking.vision.service.*;
 
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -111,26 +110,26 @@ public class Login {
                         List<RedeInterface> redes = new ArrayList<>();
 
                         adicionarRede(redes, rede);
-                        if(!janelas.isEmpty()) {
-                        for (int j = 0; j < janelas.size(); j++) {
-                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-                            LogService logService = new LogService();
-                            Log log = new Log(null, timeStamp, janelasPid.get(j), janelas.get(j), looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostname.get(0).getIdMaquina());
+                        if (!janelas.isEmpty()) {
+                            for (int j = 0; j < janelas.size(); j++) {
+                                String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+                                LogService logService = new LogService();
+                                Log log = new Log(null, timeStamp, janelasPid.get(j), janelas.get(j), looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostname.get(0).getIdMaquina());
 
-                            logService.salvarLog(log);
-                            System.out.println(log);
+                                logService.salvarLog(log);
+                                System.out.println(log);
 
-                            if (janelas.get(j).toLowerCase().contains("chrome")) {
-                                System.out.println("Sua maquina sera desligada em 2 minutos!");
-                                try {
-                                    Runtime.getRuntime().exec("shutdown -s -t 120");
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
+                                if (janelas.get(j).toLowerCase().contains("chrome")) {
+                                    System.out.println("Sua maquina sera desligada em 2 minutos!");
+                                    try {
+                                        Runtime.getRuntime().exec("shutdown -s -t 120");
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
-                            }
 
-                        }
-                        }else {
+                            }
+                        } else {
                             String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
                             LogService logService = new LogService();
                             Log log = new Log(null, timeStamp, null, null, looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostname.get(0).getIdMaquina());
