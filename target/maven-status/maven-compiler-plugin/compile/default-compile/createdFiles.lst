@@ -3,10 +3,10 @@ com\mycompany\tracking\vision\paulo\ConexaoMysql.class
 tracking\vision\service\MaquinaService.class
 tracking\vision\service\Log.class
 tracking\vision\service\LogService.class
+tracking\vision\service\Redes.class
+tracking\vision\service\Maquina.class
 tracking\vision\cli\Login$1.class
 tracking\vision\service\FuncionarioService.class
 com\mycompany\tracking\vision\paulo\Conexao.class
-tracking\vision\service\Redes.class
 tracking\vision\service\RedeService.class
 tracking\vision\service\Funcionario.class
-tracking\vision\service\Maquina.class

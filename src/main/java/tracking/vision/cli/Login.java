@@ -36,10 +36,13 @@ public class Login {
 
         while (!login) {
             Scanner in = new Scanner(System.in);
+            Scanner in2 = new Scanner(System.in);
+            
             System.out.println("Digite seu email: ");
             String email = in.nextLine();
+            
             System.out.println("Digite sua senha: ");
-            String senha = in.nextLine();
+            String senha = in2.nextLine();
 
             if (!funcionarioService.login(email, senha).isEmpty()) {
                 login = true;
