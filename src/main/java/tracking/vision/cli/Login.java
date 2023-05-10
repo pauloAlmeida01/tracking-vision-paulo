@@ -23,7 +23,7 @@ import java.util.Timer;
 public class Login {
 
     public static void main(String[] args) {
-        
+        Scanner in = new Scanner(System.in);
         FuncionarioService funcionarioService = new FuncionarioService();
         MaquinaService maquinaService = new MaquinaService();
         Looca looca = new Looca();
@@ -35,14 +35,12 @@ public class Login {
         System.out.println("Para acessar o sistema, será necessário informar seu email e senha.");
 
         while (!login) {
-            Scanner in = new Scanner(System.in);
-            Scanner in2 = new Scanner(System.in);
-            
+        
             System.out.println("Digite seu email: ");
             String email = in.nextLine();
             
             System.out.println("Digite sua senha: ");
-            String senha = in2.nextLine();
+            String senha = in.nextLine();
 
             if (!funcionarioService.login(email, senha).isEmpty()) {
                 login = true;
@@ -140,10 +138,10 @@ public class Login {
                             logService.salvarLog(log);
                             System.out.println(log);
                         }
-                        System.out.println("Se desejar parar o monitoramento digite(Sim = 0/Não = 1):");
+                        System.out.println("Se desejar parar o monitoramento digite(Sim = 1/Não = 0):");
                         Scanner scanner = new Scanner(System.in);
                         Integer parar = scanner.nextInt();
-                        if (parar == 0) {
+                        if (parar == 1) {
                             System.out.println("Monitoramento parado!");
                             System.exit(0);
                         } else {
