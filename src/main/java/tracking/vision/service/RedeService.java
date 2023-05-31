@@ -5,15 +5,22 @@ import com.mycompany.tracking.vision.paulo.ConexaoMysql;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class RedeService {
-    public void cadastrarRede(Redes redes) {
+public void cadastrarRede(Redes rede) {
         Conexao conexao = new Conexao();
         ConexaoMysql conexaoMysql = new ConexaoMysql();
 
         JdbcTemplate con = conexao.getConnection();
         JdbcTemplate conMysql = conexaoMysql.getConnection();
 
-        con.update("insert into placaRede(nomeRede,nomeExibicao,ipv4,mac,fkMaquina) values (?, ?, ?, ?,?)", redes.getNomeRede(), redes.getNomeExibicao(), redes.getIpv4(), redes.getMac(), redes.getFkMaquina());
-        conMysql.update("insert into placaRede(idRede,nomeRede,nomeExibicao,ipv4,mac,fkMaquina) values (?,?, ?, ?, ?,?)",retornarIdRede(redes), redes.getNomeRede(), redes.getNomeExibicao(), redes.getIpv4(), redes.getMac(), redes.getFkMaquina());
+        con.update("insert into placaRede(nomeRede,nomeExibicao,ipv4,mac,fkMaquina) values (?, ?, ?, ?,?)", rede.getNomeRede(), rede.getNomeExibicao(), rede.getIpv4(), rede.getMac(),rede.getFkMaquina());
+    }
+
+    public void cadastrarRedeMysql(Redes rede) {
+        ConexaoMysql conexaoMysql = new ConexaoMysql();
+
+        JdbcTemplate conMysql = conexaoMysql.getConnection();
+
+        conMysql.update("insert into placaRede(nomeRede,nomeExibicao,ipv4,mac,fkMaquina) values (?, ?, ?, ?,?)", rede.getNomeRede(), rede.getNomeExibicao(), rede.getIpv4(), rede.getMac(),rede.getFkMaquina());
     }
 
     public Integer retornarIdRede (Redes redes) {

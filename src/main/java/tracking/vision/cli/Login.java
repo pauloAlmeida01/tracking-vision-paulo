@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Timer;
+import org.json.JSONObject;
 
 /**
  *
@@ -26,6 +27,7 @@ public class Login {
         Scanner in = new Scanner(System.in);
         FuncionarioService funcionarioService = new FuncionarioService();
         MaquinaService maquinaService = new MaquinaService();
+        LogService logService = new LogService();
         Looca looca = new Looca();
         RedeService redeService = new RedeService();
         Rede rede = looca.getRede();
@@ -35,10 +37,10 @@ public class Login {
         System.out.println("Para acessar o sistema, será necessário informar seu email e senha.");
 
         while (!login) {
-        
+
             System.out.println("Digite seu email: ");
             String email = in.nextLine();
-            
+
             System.out.println("Digite sua senha: ");
             String senha = in.nextLine();
 
@@ -47,35 +49,43 @@ public class Login {
                 System.out.println("Login realizado com sucesso!");
 
                 List<Maquina> hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
+                List<Maquina> hostnameMysql = maquinaService.buscarPeloHostnameMySql(looca.getRede().getParametros().getHostName());
                 List<RedeInterface> redes = new ArrayList<>();
+                Double freqCpu = Double.valueOf(looca.getProcessador().getFrequencia());
+                freqCpu = freqCpu / 1000000000.00;
 
+                Double capRam = Double.valueOf(looca.getMemoria().getTotal());
+                capRam = capRam / 1073741824.00;
+
+                Double capDisco = Double.valueOf(looca.getGrupoDeDiscos().getDiscos().get(0).getTamanho());
+                capDisco = capDisco / 1073741824.00;
+
+                Double leituraDisco = Double.valueOf(looca.getGrupoDeDiscos().getDiscos().get(0).getBytesDeLeitura());
+                leituraDisco = leituraDisco / 100000000.00;
+
+                Double escritaDisco = Double.valueOf(looca.getGrupoDeDiscos().getDiscos().get(0).getBytesDeEscritas());
+                escritaDisco = escritaDisco / 100000000.00;
+
+                adicionarRede(redes, rede);
+                Maquina maquina = new Maquina(null, 1, rede.getParametros().getHostName(), looca.getProcessador().getNome(), freqCpu, "Memoria", capRam, looca.getGrupoDeDiscos().getDiscos().get(0).getModelo(), capDisco, leituraDisco, escritaDisco, funcionarioService.retornarFkEmpresa(email, senha), 1);
                 if (hostname.isEmpty()) {
 
-                    System.out.println("Cadastrando maquina...");
-
-                    Double freqCpu = Double.valueOf(looca.getProcessador().getFrequencia());
-                    freqCpu = freqCpu / 1000000000.00;
-
-                    Double capRam = Double.valueOf(looca.getMemoria().getTotal());
-                    capRam = capRam / 1073741824.00;
-
-                    Double capDisco = Double.valueOf(looca.getGrupoDeDiscos().getDiscos().get(0).getTamanho());
-                    capDisco = capDisco / 1073741824.00;
-
-                    Double leituraDisco = Double.valueOf(looca.getGrupoDeDiscos().getDiscos().get(0).getBytesDeLeitura());
-                    leituraDisco = leituraDisco / 100000000.00;
-
-                    Double escritaDisco = Double.valueOf(looca.getGrupoDeDiscos().getDiscos().get(0).getBytesDeEscritas());
-                    escritaDisco = escritaDisco / 100000000.00;
-
-                    adicionarRede(redes, rede);
-                    Maquina maquina = new Maquina(null, 1, rede.getParametros().getHostName(), looca.getProcessador().getNome(), freqCpu, "Memoria", capRam, looca.getGrupoDeDiscos().getDiscos().get(0).getModelo(), capDisco, leituraDisco, escritaDisco, funcionarioService.retornarFkEmpresa(email, senha), 1);
+                    System.out.println("Cadastrando maquina no SQL Server...");
 
                     maquinaService.salvarMaquina(maquina);
                     System.out.println("Cadastrando rede...");
                     hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
                     Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostname.get(0).getIdMaquina());
                     redeService.cadastrarRede(redesCadastrar);
+                } else if (hostnameMysql.isEmpty()) {
+
+                    System.out.println("Cadastrando maquina no Mysql...");
+
+                    maquinaService.salvarMaquinaMysql(maquina);
+                    System.out.println("Cadastrando rede...");
+                    hostnameMysql = maquinaService.buscarPeloHostnameMySql(looca.getRede().getParametros().getHostName());
+                    Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostnameMysql.get(0).getIdMaquina());
+                    redeService.cadastrarRedeMysql(redesCadastrar);
                 } else {
                     System.out.println("Maquina ja cadastrada!");
                 }
@@ -83,6 +93,7 @@ public class Login {
                 System.out.println("Começando monitoramento...");
 
                 hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
+                hostnameMysql = maquinaService.buscarPeloHostnameMySql(looca.getRede().getParametros().getHostName());
 
                 Double usoDisco = Double.valueOf(looca.getGrupoDeDiscos().getDiscos().get(0).getTamanho() - looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
                 usoDisco = usoDisco / 1073741824.00;
@@ -93,6 +104,7 @@ public class Login {
                 Double finalUsoDisco = usoDisco;
                 Double finalUsoRam = usoRam;
                 List<Maquina> finalHostname = hostname;
+                List<Maquina> finalHostnameMysql = hostnameMysql;
                 new Timer().scheduleAtFixedRate(new TimerTask() {
                     @Override
                     public void run() {
@@ -114,28 +126,53 @@ public class Login {
                         if (!janelas.isEmpty()) {
                             for (int j = 0; j < janelas.size(); j++) {
                                 String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-                                LogService logService = new LogService();
                                 Log log = new Log(null, timeStamp, janelasPid.get(j), janelas.get(j), looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostname.get(0).getIdMaquina());
+                                Log logMysql = new Log(null, timeStamp, janelasPid.get(j), janelas.get(j), looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostnameMysql.get(0).getIdMaquina());
 
-                                logService.salvarLog(log);
                                 System.out.println(log);
+                                logService.salvarLog(log);
+                                logService.salvarLogMysql(logMysql);
 
-                                if (janelas.get(j).toLowerCase().contains("chrome")) {
-                                    System.out.println("Sua maquina sera desligada em 2 minutos!");
-                                    try {
-                                        Runtime.getRuntime().exec("shutdown -s -t 120");
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
+                                LimitesService limitesService = new LimitesService();
+                                List<Limites> limites = limitesService.retornarLimites(log.getFkMaquina());
+                                JSONObject json = new JSONObject();
+                  
+                                json.put("text", """
+                                                 Aviso de uso de recursos 
+                                                 Processador: """ + log.getUsoCpu() + "%\n" + "Disco: " + log.getUsoDisco() + "GB\n" + "Memoria: " + log.getUsoRam() + "GB\n");
+                                try {
+                                    Slack.sendMessage(json);
+                                } catch (IOException | InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                JanelasBloqueadasService janelasBloqueadasService = new JanelasBloqueadasService();
+                                List<JanelasBloqueadas> janelasBloqueadasList = janelasBloqueadasService.retornarJanelasBloqueadas(finalHostname.get(0).getFkEmpresa());
+
+                                for (JanelasBloqueadas janelasBloqueadas : janelasBloqueadasList) {
+                                    if (janelas.get(j).toLowerCase().contains(janelasBloqueadas.getNome().toLowerCase())) {
+                                        System.out.println("Seu computador será desl");
+                                        try {
+                                            if (looca.getSistema().getSistemaOperacional().equalsIgnoreCase("windows")) {
+                                                Runtime.getRuntime().exec("shutdown -s -t 120");
+
+                                            } else {
+                                                Runtime.getRuntime().exec("sudo shutdown now");
+                                            }
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
                                     }
+
                                 }
 
                             }
                         } else {
                             String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-                            LogService logService = new LogService();
                             Log log = new Log(null, timeStamp, null, null, looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostname.get(0).getIdMaquina());
+                            Log logMysql = new Log(null, timeStamp, null, null, looca.getProcessador().getUso(), finalUsoDisco, finalUsoRam, (redes.get(0).getBytesRecebidos() * 8) / 1000000, (redes.get(0).getBytesEnviados() * 8) / 1000000, finalHostnameMysql.get(0).getIdMaquina());
 
                             logService.salvarLog(log);
+                            logService.salvarLogMysql(logMysql);
                             System.out.println(log);
                         }
                         System.out.println("Se desejar parar o monitoramento digite(Sim = 1/Não = 0):");
