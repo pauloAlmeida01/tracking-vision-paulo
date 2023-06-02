@@ -78,10 +78,10 @@ public class Login {
                     hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
                     Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostname.get(0).getIdMaquina());
                     redeService.cadastrarRede(redesCadastrar);
-                }else {
+                } else {
                     System.out.println("Maquina ja cadastrada na Nuvem");
                 }
-                
+
                 if (hostnameMysql.isEmpty()) {
 
                     System.out.println("Cadastrando maquina no Mysql...");
@@ -140,15 +140,12 @@ public class Login {
 
                                 LimitesService limitesService = new LimitesService();
                                 List<Limites> limites = limitesService.retornarLimites(log.getFkMaquina());
-                                JSONObject json = new JSONObject();
-                  
-                                json.put("text", """
-                                                 Aviso de uso de recursos 
-                                                 Processador: """ + log.getUsoCpu() + "%\n" + "Disco: " + log.getUsoDisco() + "GB\n" + "Memoria: " + log.getUsoRam() + "GB\n");
-                                try {
-                                    Slack.sendMessage(json);
-                                } catch (IOException | InterruptedException e) {
-                                    throw new RuntimeException(e);
+                                if (limites.size() > 0) {
+                                    try {
+                                        AlertaSlack.mandarAlerta(log, limites, finalHostname.get(0).getFkEmpresa());
+                                    } catch (IOException | InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
                                 JanelasBloqueadasService janelasBloqueadasService = new JanelasBloqueadasService();
                                 List<JanelasBloqueadas> janelasBloqueadasList = janelasBloqueadasService.retornarJanelasBloqueadas(finalHostname.get(0).getFkEmpresa());

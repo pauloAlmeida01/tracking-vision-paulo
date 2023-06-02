@@ -1,33 +1,38 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package tracking.vision.service;
 
-/**
- *
- * @author PAULOROBERTODEALMEID
- */
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
 public class Slack {
+    private Integer idSlack;
+    private String linkSlack;
 
-    private static final String URL = "https://hooks.slack.com/services/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";
-    private static final HttpClient client = HttpClient.newHttpClient();
+    public Slack(Integer idSlack, String linkSlack) {
+        this.idSlack = idSlack;
+        this.linkSlack = linkSlack;
+    }
 
-    public static void sendMessage(JSONObject content) throws IOException, InterruptedException {
-        System.out.println("Enviando mensagem para o slack");
-        HttpRequest request = HttpRequest.newBuilder(URI.create(URL)).header("accept", "application/json").POST(HttpRequest.BodyPublishers.ofString(content.toString())).build();
+    public Slack() {
+    }
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    public Integer getIdSlack() {
+        return idSlack;
+    }
 
-        System.out.println("Response: " + response.body());
-        System.out.println("Request: " + response.request());
+    public void setIdSlack(Integer idSlack) {
+        this.idSlack = idSlack;
+    }
+
+    public String getLinkSlack() {
+        return linkSlack;
+    }
+
+    public void setLinkSlack(String linkSlack) {
+        this.linkSlack = linkSlack;
+    }
+
+    @Override
+    public String toString() {
+        return "Slack{" +
+                "idSlack=" + idSlack +
+                ", linkSlack='" + linkSlack + '\'' +
+                '}';
     }
 }

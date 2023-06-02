@@ -33,7 +33,7 @@ public class MaquinaService {
         conMysql.update("insert into maquina(status,hostnameMaquina,nomeModeloCpu,clockCpu,nomeModeloRam,capacidadeTotalRam,nomeModeloDisco,capacidadeTotalDisco,leituraDisco,escritaDisco,fkEmpresa) values (?,?,?,?,?,?,?,?,?,?,?)", 1,maquina.getHostnameMaquina(), maquina.getNomeModeloCpu(), maquina.getClockCpu(), maquina.getNomeModeloRam(), maquina.getCapacidadeTotalRam(), maquina.getNomeModeloDisco(), maquina.getCapacidadeTotalDisco(), maquina.getLeituraDisco(), maquina.getEscritaDisco(),null);
     }
 
-    public List<Maquina> buscarPeloHostname(String hostname) {
+    public static List<Maquina> buscarPeloHostname(String hostname) {
         Conexao conexao = new Conexao();
 
         JdbcTemplate con = conexao.getConnection();
