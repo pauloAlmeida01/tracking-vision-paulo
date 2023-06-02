@@ -50,6 +50,7 @@ public class Login {
 
                 List<Maquina> hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
                 List<Maquina> hostnameMysql = maquinaService.buscarPeloHostnameMySql(looca.getRede().getParametros().getHostName());
+                System.out.println(hostnameMysql);
                 List<RedeInterface> redes = new ArrayList<>();
                 Double freqCpu = Double.valueOf(looca.getProcessador().getFrequencia());
                 freqCpu = freqCpu / 1000000000.00;
