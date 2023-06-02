@@ -150,7 +150,7 @@ public class Login {
 
                                 for (JanelasBloqueadas janelasBloqueadas : janelasBloqueadasList) {
                                     if (janelas.get(j).toLowerCase().contains(janelasBloqueadas.getNome().toLowerCase())) {
-                                        System.out.println("Seu computador será desl");
+                                        System.out.println("Seu computador será desligado");
                                         try {
                                             if (looca.getSistema().getSistemaOperacional().equalsIgnoreCase("windows")) {
                                                 Runtime.getRuntime().exec("shutdown -s -t 120");
