@@ -78,7 +78,11 @@ public class Login {
                     hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
                     Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostname.get(0).getIdMaquina());
                     redeService.cadastrarRede(redesCadastrar);
-                } else if (hostnameMysql.isEmpty()) {
+                }else {
+                    System.out.println("Maquina ja cadastrada na Nuvem");
+                }
+                
+                if (hostnameMysql.isEmpty()) {
 
                     System.out.println("Cadastrando maquina no Mysql...");
 
@@ -88,7 +92,7 @@ public class Login {
                     Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostnameMysql.get(0).getIdMaquina());
                     redeService.cadastrarRedeMysql(redesCadastrar);
                 } else {
-                    System.out.println("Maquina ja cadastrada!");
+                    System.out.println("Maquina ja cadastrada no Mysql");
                 }
 
                 System.out.println("Começando monitoramento...");
