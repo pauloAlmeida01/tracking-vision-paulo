@@ -31,6 +31,7 @@ public class Login {
         Looca looca = new Looca();
         RedeService redeService = new RedeService();
         Rede rede = looca.getRede();
+        Logs logs = new Logs("logs.txt");
 
         Boolean login = false;
         System.out.println("Olá Seja Bem Vindo ao Sistema de Monitoramento da Tracking Vision!");
@@ -50,7 +51,7 @@ public class Login {
 
                 List<Maquina> hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
                 List<Maquina> hostnameMysql = maquinaService.buscarPeloHostnameMySql(looca.getRede().getParametros().getHostName());
-                System.out.println(hostnameMysql);
+                logs.logLogin("Login Realizado com sucesso!", email);
                 List<RedeInterface> redes = new ArrayList<>();
                 Double freqCpu = Double.valueOf(looca.getProcessador().getFrequencia());
                 freqCpu = freqCpu / 1000000000.00;
@@ -76,10 +77,13 @@ public class Login {
                     maquinaService.salvarMaquina(maquina);
                     System.out.println("Cadastrando rede...");
                     hostname = maquinaService.buscarPeloHostname(looca.getRede().getParametros().getHostName());
+                    logs.logCadastro("Cadastrada com sucesso no SQL Server!", hostname);
                     Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostname.get(0).getIdMaquina());
                     redeService.cadastrarRede(redesCadastrar);
+                    logs.logRede("Rede cadastrada com sucesso no SQL Server!", hostname, redesCadastrar);
                 } else {
-                    System.out.println("Maquina ja cadastrada na Nuvem");
+                    System.out.println("Maquina ja cadastrada no SQL Server");
+                    logs.logCadastro("Já esta cadastrada no SQL Server");
                 }
 
                 if (hostnameMysql.isEmpty()) {
@@ -89,10 +93,13 @@ public class Login {
                     maquinaService.salvarMaquinaMysql(maquina);
                     System.out.println("Cadastrando rede...");
                     hostnameMysql = maquinaService.buscarPeloHostnameMySql(looca.getRede().getParametros().getHostName());
+                    logs.logCadastro("Cadastrada com sucesso no MySQL", hostnameMysql);
                     Redes redesCadastrar = new Redes(null, redes.get(0).getNome(), redes.get(0).getNomeExibicao(), redes.get(0).getEnderecoIpv4().get(0), redes.get(0).getEnderecoMac(), hostnameMysql.get(0).getIdMaquina());
                     redeService.cadastrarRedeMysql(redesCadastrar);
+                    logs.logRede("Rede cadastrada com sucesso MySQL!", hostnameMysql, redesCadastrar);
                 } else {
                     System.out.println("Maquina ja cadastrada no Mysql");
+                    logs.logCadastro("Já esta cadastrada no MySQL");
                 }
 
                 System.out.println("Começando monitoramento...");

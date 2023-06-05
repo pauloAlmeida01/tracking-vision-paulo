@@ -26,7 +26,7 @@ public class ConexaoMysql {
         dataSource.setPassword("paulo1421");
 
 //        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-//        dataSource.setUrl("jdbc:mysql://localhost:3306/track");
+   //     dataSource.setUrl("jdbc:mysql://localhost:3306/track");
 //        dataSource.setUsername("root");
 //        dataSource.setPassword("paulo1421");
 
