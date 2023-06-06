@@ -147,7 +147,9 @@ public class Login {
 
                                 LimitesService limitesService = new LimitesService();
                                 List<Limites> limites = limitesService.retornarLimites(log.getFkMaquina());
-                                if (limites.size() > 0) {
+                                System.out.println(log.getFkMaquina());
+                                System.out.println(limites);
+                                if (!limites.isEmpty()) {
                                     try {
                                         AlertaSlack.mandarAlerta(log, limites, finalHostname.get(0).getFkEmpresa());
                                     } catch (IOException | InterruptedException e) {
